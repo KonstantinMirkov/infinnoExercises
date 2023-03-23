@@ -6,8 +6,8 @@ import java.util.function.Predicate;
 
 public class Task3 {
     public static void main(String[] args) {
-        Integer[] a = {1, 2, 3, 4};
-        ArrayList<Integer> list = new ArrayList<>(Arrays.asList(a));
+        Integer[] arr = {1, 2, 3, 4};
+        ArrayList<Integer> list = new ArrayList<>(Arrays.asList(arr));
         remove(list, e -> e % 2 == 0);
         System.out.println(list); // [1, 3]
     }
