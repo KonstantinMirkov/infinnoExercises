@@ -24,18 +24,18 @@ public class Stock {
     }
 
     public void startTradingSession() {
-        //TODO
+
     }
 
     public void endTradingSession() {
-        //TODO
+
     }
 
     public void buy(int quantity) {
-        //TODO
+
     }
 
     public void sell(int quantity) {
-        //TODO
+
     }
 }
