@@ -35,7 +35,7 @@ public class Task2 {
 
         if (object instanceof String) {
             result.add((String) object);
-        } else if (object.getClass().isArray()) {
+        } else if (object instanceof Object[]) {
             for (Object element : (Object[]) object) {
                 extractStrings(element, result);
             }

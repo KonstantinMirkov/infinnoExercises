@@ -1,6 +1,8 @@
 package tests.test6;
 
 public class Task3 {
+    static final int LATIN_LETTERS_COUNT = 26;
+
     public static void main(String[] args) {
         String word1 = "alabala";
         System.out.println(firstNonRepeatingCharacter(word1)); // 3
@@ -13,7 +15,6 @@ public class Task3 {
 
         String word4 = null;
         System.out.println(firstNonRepeatingCharacter(word4)); // -1
-
     }
 
     public static int firstNonRepeatingCharacter(String word) {
@@ -21,7 +22,7 @@ public class Task3 {
             return -1;
         }
 
-        int[] charCounts = new int[26];
+        int[] charCounts = new int[LATIN_LETTERS_COUNT];
         for (int i = 0; i < word.length(); i++) {
             charCounts[word.charAt(i) - 'a']++;
         }

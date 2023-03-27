@@ -21,14 +21,15 @@ public class Task1 {
         for (int i = 1; i < arr.length; i++) {
             if (arr[i] == arr[i - 1] + 1) {
                 end = i;
-            } else {
-                if (end - start > maxEnd - maxStart) {
-                    maxStart = start;
-                    maxEnd = end;
-                }
-                start = i;
-                end = i;
+                continue;
             }
+            if (end - start > maxEnd - maxStart) {
+                maxStart = start;
+                maxEnd = end;
+            }
+            start = i;
+            end = i;
+
         }
 
         int[] result = new int[maxEnd - maxStart + 1];
