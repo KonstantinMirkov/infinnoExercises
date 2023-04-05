@@ -1,33 +1,53 @@
 package homeworks.homework21;
 
-import java.util.logging.LogRecord;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import static java.util.logging.Level.*;
+import static homeworks.homework21.Task2.LogLevel.*;
 
 public class Task2 {
     public static void main(String[] args) {
-        Logger logger = new Logger();
+        Logger logger = new Logger("name");
 
-        logger.setFormatter(record -> record.getLevel() + ": " + record.getMessage());
+        logger.setFormatter(record -> record.logLevel + ": " + record.logMessage);
 
-        logger.setLogLevel(LogLevel.INFO);
+        logger.setLogLevel(LogLevel.FINEST);
 
-        logger.setFilter(record -> !record.getMessage().contains("filtered"));
+        // logger.setFilter(record -> record.logMessage.contains("warning"));
 
-        logger.log(new LogRecord(SEVERE, "A severe message"));
-        logger.log(new LogRecord(WARNING, "A warning message"));
-        logger.log(new LogRecord(INFO, "An info message"));
-        logger.log(new LogRecord(CONFIG, "A config message"));
-        logger.log(new LogRecord(FINE, "A fine message"));
-        logger.log(new LogRecord(FINER, "A finer message"));
-        logger.log(new LogRecord(FINEST, "A finest message"));
-        logger.log(new LogRecord(INFO, "An info message that should be filtered"));
+        logger.log(SEVERE, "A severe message");
+        logger.log(WARNING, "A warning message");
+        logger.log(INFO, "An info message");
+        logger.log(CONFIG, "A config message");
+        logger.log(FINE, "A fine message");
+        logger.log(FINER, "A finer message");
+        logger.log(FINEST, "A finest message");
+        logger.log(INFO, "An info message that should be filtered");
     }
 
     public static class Logger {
-        private LogFormatter formatter;
-        private LogLevel level;
+        static class DefaultLogFormatter implements LogFormatter {
+            private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss,SSS");
+
+            @Override
+            public String format(LogRecord record) {
+                StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+                String sourceFile = stackTraceElements[stackTraceElements.length - 1].getFileName();
+                int lineNumber = stackTraceElements[stackTraceElements.length - 1].getLineNumber();
+
+                return LocalDateTime.now().format(dateFormatter) + " " + record.logLevel + " " + record.loggerName + " (" + sourceFile + ":" + lineNumber + ") - " + record.logMessage;
+            }
+        }
+
+        private String name = "";
+
+        private LogFormatter formatter = new DefaultLogFormatter();
+        private LogLevel level = WARNING;
         private LogFilter filter;
+
+        public Logger(String name) {
+            this.name = name;
+        }
 
         public void setFormatter(LogFormatter formatter) {
             this.formatter = formatter;
@@ -41,16 +61,17 @@ public class Task2 {
             this.filter = filter;
         }
 
-        public void log(LogRecord record) {
-            if (record.getLevel().intValue() < level.intValue()) {
+        public void log(LogLevel loglevel, String message) {
+            if (loglevel.ordinal() < level.ordinal()) {
                 return;
             }
 
-            if (filter != null && !filter.isLoggable(record)) {
+            LogRecord logRecord = new LogRecord(name, loglevel, message);
+            if (filter != null && !filter.isLoggable(logRecord)) {
                 return;
             }
 
-            String message = formatter.format(record);
+            message = formatter.format(logRecord);
             System.out.println(message);
         }
     }
@@ -63,23 +84,19 @@ public class Task2 {
         boolean isLoggable(LogRecord record);
     }
 
-    public static class LogLevel {
-        public static final LogLevel SEVERE = new LogLevel(1000);
-        public static final LogLevel WARNING = new LogLevel(900);
-        public static final LogLevel INFO = new LogLevel(800);
-        public static final LogLevel CONFIG = new LogLevel(700);
-        public static final LogLevel FINE = new LogLevel(500);
-        public static final LogLevel FINER = new LogLevel(400);
-        public static final LogLevel FINEST = new LogLevel(300);
+    static class LogRecord {
+        String loggerName;
+        LogLevel logLevel;
+        String logMessage;
 
-        private int value;
-
-        private LogLevel(int value) {
-            this.value = value;
+        public LogRecord(String loggerName, LogLevel logLevel, String logMessage) {
+            this.loggerName = loggerName;
+            this.logLevel = logLevel;
+            this.logMessage = logMessage;
         }
+    }
 
-        public int intValue() {
-            return value;
-        }
+    enum LogLevel {
+        FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE
     }
 }

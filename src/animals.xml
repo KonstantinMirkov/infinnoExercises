@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<animals>
+    <dog id="1">
+        <name>dog</name>
+        <age>14</age>
+        <properties>
+            <property code="123">Is a small dog</property>
+            <property code="123">Is a big dog</property>
+
+        </properties>
+    </dog>
+
+    <dog id="2">
+        <name>dog2</name>
+        <age>7</age>
+        <properties>
+            <property code="345">Is a small dog</property>
+            <property code="345">Is a big dog</property>
+        </properties>
+    </dog>
+</animals>

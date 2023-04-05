@@ -1,10 +1,10 @@
-package homeworks;
+package homeworks.homework24;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-public class Task1 {
-    public static class MyArrayList<E> {
+public class Task1And2 {
+    public static class MyArrayList<E> implements Iterable<E> {
         private static final int INITIAL_CAPACITY = 10;
         private int size;
         private Object[] elementData;
@@ -204,9 +204,9 @@ public class Task1 {
             return result;
         }
 
-        public <T> T[] toArray(T[] arr) {
+        public E[] toArray(E[] arr) {
             if (arr.length < size) {
-                return (T[]) Arrays.copyOf(elementData, size, arr.getClass());
+                return (E[]) Arrays.copyOf(elementData, size, arr.getClass());
             }
 
             System.arraycopy(elementData, 0, arr, 0, size);
@@ -217,40 +217,77 @@ public class Task1 {
             return arr;
         }
 
-        public boolean retainAll(Collection<E> c) {
-            if (c == null) {
-                throw new NullPointerException("collection is null");
-            }
-
-            MyArrayListIterator<E> iterator = new MyArrayListIterator<>();
-
-            boolean found = false;
-            while (iterator.hasNext()) {
-                if (!c.contains(iterator.next())) {
-                    iterator.remove();
-                    found = true;
-                }
-            }
-            return found;
+        public <T> boolean removeAll(Collection<T> c) {
+            return batchRemove(c);
         }
 
-        public boolean removeAll(Collection<?> c) {
-            MyArrayListIterator<E> e = new MyArrayListIterator<>();
+        public <T> boolean retainAll(Collection<T> c) {
+            return batchRemove(c, true, size);
+        }
 
-            boolean modified = false;
-            while (e.hasNext()) {
-                if (c.contains(e.next())) {
-                    e.remove();
-                    modified = true;
-                }
+        private boolean batchRemove(Collection<?> c) {
+            int oldSize = size;
+            boolean modified = batchRemove(c, false, size);
+            if (modified) {
+                updateSizeAndModCount(size - oldSize);
             }
             return modified;
+        }
+
+        public boolean batchRemove(Collection<?> c, boolean complement, final int end) {
+            Objects.requireNonNull(c);
+            final Object[] elements = elementData;
+
+            int i = 0;
+            for (; true; i++) {
+                if (i == end) {
+                    return false;
+                }
+
+                if (c.contains(elements[i]) != complement) {
+                    break;
+                }
+            }
+
+            for (int w = i++; i < end; i++) {
+                Object e = elements[i];
+                if (c.contains(e) == complement) {
+                    elements[w++] = e;
+                }
+            }
+            //TODO Retain all left
+            return true;
+        }
+
+        @Override
+        public Iterator<E> iterator() {
+            return new MyArrayListIterator<>();
+        }
+
+        public ListIterator listIterator() {
+            return MyArrayListIterator.listIterator();
+        }
+
+        public ListIterator listIterator(int index) {
+            return MyArrayListIterator.listIterator(index);
+        }
+
+        private void updateSizeAndModCount(int sizeChange) {
+            MyArrayList<E> list = this;
+            list.size += sizeChange;
         }
     }
 
     public static class MyArrayListIterator<E> implements Iterator<E> {
         private E[] elementData;
         private int currentIndex = 0;
+
+        public MyArrayListIterator() {
+        }
+
+        public MyArrayListIterator(int currentIndex) {
+            this.currentIndex = currentIndex;
+        }
 
         @Override
         public boolean hasNext() {
@@ -259,7 +296,18 @@ public class Task1 {
 
         @Override
         public E next() {
+            if (currentIndex == elementData.length) {
+                throw new NoSuchElementException("There is no such element.");
+            }
             return elementData[currentIndex++];
+        }
+
+        public static ListIterator listIterator() {
+            return (ListIterator) new MyArrayListIterator<>();
+        }
+
+        public static ListIterator listIterator(int index) {
+            return (ListIterator) new MyArrayListIterator<>(index);
         }
     }
 

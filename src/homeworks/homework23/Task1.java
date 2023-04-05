@@ -1,7 +1,7 @@
-package homeworks.homework22;
+package homeworks.homework23;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.Predicate;
 
 public class Task1 {
     public static class MyArrayList<E> {
@@ -196,9 +196,17 @@ public class Task1 {
             }
         }
 
-        public <T> T[] toArray(T[] arr) {
+        public Object[] toArray() {
+            Object[] result = new Object[size];
+
+            System.arraycopy(elementData, 0, result, 0, size);
+
+            return result;
+        }
+
+        public <E> E[] toArray(E[] arr) {
             if (arr.length < size) {
-                return (T[]) Arrays.copyOf(elementData, size, arr.getClass());
+                return (E[]) Arrays.copyOf(elementData, size, arr.getClass());
             }
 
             System.arraycopy(elementData, 0, arr, 0, size);
@@ -207,6 +215,51 @@ public class Task1 {
                 arr[size] = null;
             }
             return arr;
+        }
+
+        public boolean removeAll(Collection<?> c) {
+            MyArrayListIterator<E> e = new MyArrayListIterator<>();
+
+            boolean modified = false;
+            while (e.hasNext()) {
+                if (c.contains(e.next())) {
+                    e.remove();
+                    modified = true;
+                }
+            }
+            return modified;
+        }
+
+        public boolean retainAll(Collection<E> c) {
+            if (c == null) {
+                throw new NullPointerException("collection is null");
+            }
+
+            MyArrayListIterator<E> iterator = new MyArrayListIterator<>();
+
+            boolean found = false;
+            while (iterator.hasNext()) {
+                if (!c.contains(iterator.next())) {
+                    iterator.remove();
+                    found = true;
+                }
+            }
+            return found;
+        }
+    }
+
+    public static class MyArrayListIterator<E> implements Iterator<E> {
+        private E[] elementData;
+        private int currentIndex = 0;
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex < elementData.length;
+        }
+
+        @Override
+        public E next() {
+            return elementData[currentIndex++];
         }
     }
 
