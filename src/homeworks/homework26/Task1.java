@@ -7,18 +7,29 @@ public class Task1 {
 
     public static void main(String[] args) {
         HashSet<String> set = new HashSet<>();
+        //test add
         set.add("text1");
         set.add("text2");
         set.add("text3");
-        System.out.println("Set size: " + set.size());
-        System.out.println("Set contains text1: " + set.contains("text1"));
-        System.out.println("Set contains randomText: " + set.contains("randomText"));
+
+        //test size
+        System.out.println("Set size: " + set.size()); // 3
+
+        //test contains
+        System.out.println("Set contains text1: " + set.contains("text1")); // true
+        System.out.println("Set contains randomText: " + set.contains("randomText")); // false
+
+        //test remove
         set.remove("text2");
-        System.out.println("Set size after removing text2: " + set.size());
+        System.out.println("Set size after removing text2: " + set.size()); // 2
+
+        //test clear
+        set.clear();
+        System.out.println("Set size after clear: " + set.size()); // 0
     }
 
     public static class HashSet<E> {
-        private LinkedList<E>[] data;
+        private LinkedList<E>[] buckets;
         private int capacity;
         private int size;
 
@@ -35,18 +46,18 @@ public class Task1 {
 
         public HashSet(int initialCapacity) {
             capacity = initialCapacity;
-            data = new LinkedList[capacity];
+            buckets = new LinkedList[capacity];
             size = 0;
         }
 
         public boolean add(E e) {
             int bucket = getBucket(e);
-            if (data[bucket] == null) {
-                data[bucket] = new LinkedList<>();
+            if (buckets[bucket] == null) {
+                buckets[bucket] = new LinkedList<>();
             }
 
-            if (!data[bucket].contains(e)) {
-                data[bucket].add(e);
+            if (!buckets[bucket].contains(e)) {
+                buckets[bucket].add(e);
                 size++;
                 return true;
             }
@@ -54,18 +65,18 @@ public class Task1 {
         }
 
         public void clear() {
-            data = new LinkedList[capacity];
+            Arrays.fill(buckets, null);
             size = 0;
         }
 
         public boolean contains(Object o) {
             int bucket = getBucket(o);
-            return data[bucket] != null && data[bucket].contains(o);
+            return buckets[bucket] != null && buckets[bucket].contains(o);
         }
 
         public boolean remove(Object o) {
             int bucket = getBucket(o);
-            if (data[bucket] != null && data[bucket].remove(o)) {
+            if (buckets[bucket] != null && buckets[bucket].remove(o)) {
                 size--;
                 return true;
             }
@@ -109,12 +120,12 @@ public class Task1 {
             }
 
             private void findNextIterator() {
-                while (currentIndex < capacity && (data[currentIndex] == null || !data[currentIndex].iterator().hasNext())) {
+                while (currentIndex < capacity && (buckets[currentIndex] == null || !buckets[currentIndex].iterator().hasNext())) {
                     currentIndex++;
                 }
 
                 if (currentIndex < capacity) {
-                    currentIterator = data[currentIndex].iterator();
+                    currentIterator = buckets[currentIndex].iterator();
                 } else {
                     currentIterator = null;
                 }
@@ -145,7 +156,6 @@ public class Task1 {
                 }
 
                 current.next = new Node<>(e);
-
                 size++;
                 return true;
             }
@@ -165,12 +175,12 @@ public class Task1 {
 
                     current.next = new Node<>(element, current.next);
                 }
-
                 size++;
             }
 
             public boolean contains(Object o) {
                 Node<E> current = elementData;
+
                 while (current != null) {
                     if (current.data.equals(o)) {
                         return true;
@@ -184,6 +194,7 @@ public class Task1 {
                 if (elementData == null) {
                     throw new NoSuchElementException();
                 }
+
                 E data = elementData.data;
                 elementData = elementData.next;
                 size--;
@@ -194,13 +205,16 @@ public class Task1 {
                 if (index < 0 || index >= size) {
                     throw new IndexOutOfBoundsException();
                 }
+
                 if (index == 0) {
                     return remove();
                 }
+
                 Node<E> current = elementData;
                 for (int i = 0; i < index - 1; i++) {
                     current = current.next;
                 }
+
                 E data = current.next.data;
                 current.next = current.next.next;
                 size--;
@@ -211,11 +225,13 @@ public class Task1 {
                 if (elementData == null) {
                     return false;
                 }
+
                 if (elementData.data.equals(o)) {
                     elementData = elementData.next;
                     size--;
                     return true;
                 }
+
                 Node<E> current = elementData;
                 while (current.next != null) {
                     if (current.next.data.equals(o)) {
