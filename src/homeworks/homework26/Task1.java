@@ -51,17 +51,20 @@ public class Task1 {
         }
 
         public boolean add(E e) {
-            int bucket = getBucket(e);
-            if (buckets[bucket] == null) {
-                buckets[bucket] = new LinkedList<>();
+            int bucketIndex = getBucket(e);
+            LinkedList<E> bucket = buckets[bucketIndex];
+            if (bucket == null) {
+                bucket = new LinkedList<>();
+                buckets[bucketIndex] = bucket;
             }
 
-            if (!buckets[bucket].contains(e)) {
-                buckets[bucket].add(e);
-                size++;
-                return true;
+            if (bucket.contains(e)) {
+                return false;
             }
-            return false;
+
+            bucket.add(e);
+            size++;
+            return true;
         }
 
         public void clear() {
@@ -76,7 +79,14 @@ public class Task1 {
 
         public boolean remove(Object o) {
             int bucket = getBucket(o);
-            if (buckets[bucket] != null && buckets[bucket].remove(o)) {
+            if (buckets[bucket] == null) {
+                return false;
+            }
+
+            if (buckets[bucket].remove(o)) {
+                if (buckets[bucket].size == 0) {
+                    buckets[bucket] = null;
+                }
                 size--;
                 return true;
             }
@@ -96,13 +106,11 @@ public class Task1 {
         }
 
         private class HashSetIterator implements Iterator<E> {
-            private int currentIndex;
+            private int currentIndex = 0;
             private Iterator<E> currentIterator;
 
             public HashSetIterator() {
-                currentIndex = 0;
-                currentIterator = null;
-                findNextIterator();
+                currentIterator = findNextIterator();
             }
 
             @Override
@@ -112,22 +120,30 @@ public class Task1 {
 
             @Override
             public E next() {
-                E next = currentIterator.next();
-                if (!currentIterator.hasNext()) {
-                    findNextIterator();
+                if (currentIterator == null) {
+                    throw new NoSuchElementException();
                 }
-                return next;
+
+                if (!currentIterator.hasNext()) {
+                    currentIterator = findNextIterator();
+                    if (currentIterator == null) {
+                        throw new NoSuchElementException();
+                    }
+                }
+
+                return currentIterator.next();
             }
 
-            private void findNextIterator() {
-                while (currentIndex < capacity && (buckets[currentIndex] == null || !buckets[currentIndex].iterator().hasNext())) {
-                    currentIndex++;
-                }
+            private Iterator<E> findNextIterator() {
+                while (true) {
+                    if (currentIndex == capacity) {
+                        return null;
+                    }
 
-                if (currentIndex < capacity) {
-                    currentIterator = buckets[currentIndex].iterator();
-                } else {
-                    currentIterator = null;
+                    if (buckets[currentIndex] != null) {
+                        return buckets[currentIndex].iterator();
+                    }
+                    currentIndex++;
                 }
             }
         }

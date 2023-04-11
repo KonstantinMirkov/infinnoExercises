@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Task1 {
-
     public static void main(String[] args) {
         Logger log = Logger.getLogger("con.infinno.logger");
         log.info("test message");
