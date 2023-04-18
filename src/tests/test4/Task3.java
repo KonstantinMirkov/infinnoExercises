@@ -13,8 +13,6 @@ public class Task3 {
 
         String str4 = "";
         System.out.println(trimString(str4));
-
-
     }
 
     public static String trimString(String input) {

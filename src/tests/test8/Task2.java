@@ -13,18 +13,11 @@ public class Task2 {
         queue1.add(4);
         queue1.add(5);
 
-        // add to full queue2
-        try {
-            queue1.add(6);
-        } catch (IllegalStateException e) {
-            System.out.println(e.getMessage()); // Queue is full.
-        }
+       // remove
+//        System.out.println(queue1.remove()); // 1
+//        System.out.println(queue1.remove()); // 2
 
-        // remove
-        System.out.println(queue1.remove()); // 1
-        System.out.println(queue1.remove()); // 2
-
-        System.out.println(queue1.remove(2));
+        System.out.println(queue1.remove(3)); //true
 
 //        // print the remaining elements
 //        while (!queue1.isEmpty()) {
@@ -72,8 +65,12 @@ public class Task2 {
             }
 
             elements[tail] = e;
-            tail = (tail + 1) % elements.length;
             size++;
+
+            tail++;
+            if (tail == elements.length) {
+                tail = 0;
+            }
             return true;
         }
 
@@ -84,8 +81,8 @@ public class Task2 {
             }
 
             E element = elements[head];
-            head = (head + 1) % elements.length;
             size--;
+            head = (head + 1) % elements.length;
             return element;
         }
 
@@ -95,10 +92,41 @@ public class Task2 {
                 return false;
             }
 
-            elements[head] = (E) o;
-            head = (head + 1) % elements.length;
+            if (size == 0) {
+                throw new NoSuchElementException("Queue is empty.");
+            }
+
+            for (int i = head; i != tail; i++) {
+                if (i == elements.length) {
+                    i = 0;
+                }
+
+                if (elements[i].equals(o)) {
+                    removeIndex(i);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void removeIndex(int index) {
+            int removedElementIndex = index;
+
+            int mid = size / 2;
+            if (removedElementIndex < mid) {
+                while (removedElementIndex > head) {
+                    elements[removedElementIndex] = elements[removedElementIndex - 1];
+                    removedElementIndex--;
+                }
+                elements[head++] = null;
+            } else {
+                while (removedElementIndex < tail) {
+                    elements[removedElementIndex] = elements[removedElementIndex + 1];
+                    removedElementIndex++;
+                }
+                elements[tail--] = null;
+            }
             size--;
-            return true;
         }
 
         @Override

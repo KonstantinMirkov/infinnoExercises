@@ -9,7 +9,6 @@ public class Task2 {
         b.setMatrix(new int[][]{{7, 8}, {9, 10}, {11, 12}});
 
         Matrix c = a.multiply(b);
-
         System.out.println(c);
         //58 64
         //139 154

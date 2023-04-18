@@ -29,15 +29,9 @@ public class Task4 {
                 odds.add(num);
             }
         }
-        for (int i = 1; i < odds.size(); i++) {
-            int j = i;
-            while (j > 0 && odds.get(j - 1) > odds.get(j)) {
-                int temp = odds.get(j);
-                odds.set(j, odds.get(j - 1));
-                odds.set(j - 1, temp);
-                j--;
-            }
-        }
+
+        odds.sort(Integer::compareTo);
+
         int index = 0;
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] % 2 != 0) {

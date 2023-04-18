@@ -26,10 +26,6 @@ public class Task4 {
             }
         }
 
-        if (max1 >= (max2 * 2)) {
-            return max1;
-        } else {
-            return null;
-        }
+        return max1 >= max2 * 2 ? max1 : null;
     }
 }
