@@ -31,6 +31,7 @@ public class Task2 {
                     maxIndex = i;
                 }
             }
+
             swap(arr, start, minIndex);
 
             if (maxIndex == start) {
@@ -38,6 +39,7 @@ public class Task2 {
             }
 
             swap(arr, end, maxIndex);
+
             start++;
             end--;
         }

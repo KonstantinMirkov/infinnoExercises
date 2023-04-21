@@ -45,6 +45,10 @@ public class Task3 {
         }
 
         public static <K, V> Map<K, V> mapOf(K k1, V v1, Object... keyValues) {
+            if (keyValues.length % 2 == 1) {
+                throw new IllegalArgumentException("Array is missing value for the last key.");
+            }
+
             Map<K, V> map = new HashMap<>();
             map.put(k1, v1);
 
