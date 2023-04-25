@@ -2,12 +2,10 @@ package homeworks.homework32;
 
 import java.util.stream.Stream;
 
-import static homeworks.homework32.Task4.StreamUtils.toStream;
-
 public class Task4 {
     public static void main(String[] args) {
         String[] array = {"one", "two", "three"};
-        Stream<String> stream = toStream(array);
+        Stream<String> stream = StreamUtils.toStream(array);
         stream.forEach(System.out::println);
     }
 

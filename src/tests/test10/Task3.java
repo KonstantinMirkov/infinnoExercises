@@ -30,19 +30,21 @@ public class Task3 {
     public static String[] parseCSV(String input) {
         List<String> result = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
+
         boolean inQuotes = false;
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
-            if (c == '\"') {
+            if (c == '\"' || c == '\'') {
                 inQuotes = !inQuotes;
-            } else if (c == ',' && !inQuotes) {
-                result.add(sb.toString().trim());
-                sb.setLength(0);
-            } else {
+                if (!inQuotes) {
+                    result.add(sb.toString());
+                    sb.setLength(0);
+                }
+            } else if (inQuotes) {
                 sb.append(c);
             }
         }
-        result.add(sb.toString().trim());
+
         return result.toArray(new String[0]);
     }
 }

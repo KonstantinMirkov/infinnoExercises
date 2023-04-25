@@ -1,7 +1,5 @@
 package tests.test10;
 
-import java.util.LinkedList;
-
 public class Task1 {
     public static void main(String[] args) {
         int res;
@@ -25,28 +23,28 @@ public class Task1 {
     }
 
     public static class LatestMax {
-        private LinkedList<Integer> linkedList;
+        private int[] array;
         private int k;
-        private int max;
+        private int index;
 
         public LatestMax(int k) {
             this.k = k;
-            linkedList = new LinkedList<>();
-            max = Integer.MIN_VALUE;
+            array = new int[k];
+            index = 0;
         }
 
         public int add(int num) {
-            if (linkedList.size() == k) {
-                int removed = linkedList.poll();
-                if (removed == max) {
-                    max = Integer.MIN_VALUE;
-                    for (int n : linkedList) {
-                        max = Math.max(max, n);
-                    }
-                }
+            if (index == k) {
+                index = 0;
             }
-            linkedList.offer(num);
-            max = Math.max(max, num);
+
+            array[index++] = num;
+
+            int max = num;
+            for (int n : array) {
+                max = Math.max(max, n);
+            }
+
             return max;
         }
     }

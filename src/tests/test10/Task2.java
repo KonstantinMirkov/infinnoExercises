@@ -11,7 +11,13 @@ public class Task2 {
             return false;
         }
 
-        String s1s1 = s1 + s1;
-        return s1s1.contains(s2);
+        for (int i = 0; i < s1.length(); i++) {
+            String rotated = s1.substring(i) + s1.substring(0, i);
+            if (rotated.equals(s2)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
